@@ -1,0 +1,120 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.3.4'
+	id 'io.spring.dependency-management' version '1.1.6'
+	id 'jacoco'
+	 // TODO Enable checkstyle and PMD. Fix all the relevant issues.
+    id "checkstyle"
+    id "pmd"
+}
+
+group = 'com.audition'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+repositories {
+	mavenCentral()
+}
+
+ext {
+    set('slf4jVersion', "2.0.5")
+    
+}
+
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
+	implementation "org.projectlombok:lombok"
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+ 	implementation 'com.google.code.gson:gson:2.8.9'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	
+	testImplementation 'org.mockito:mockito-core'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	 
+	
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+jacoco {
+    toolVersion = "0.8.7"
+}
+
+
+
+
+jacocoTestCoverageVerification {
+    // Set the minimum coverage requirements
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.8 // 80% coverage
+            }
+            element = 'CLASS'
+      
+             excludes = ['com.audition.exception.*','com.audition.client.*','com.audition.logging.*']
+             
+        }
+        
+        
+    }
+}
+jacocoTestReport {
+    reports {
+        xml.required.set(false) // Disable XML report
+        csv.required.set(false) // Disable CSV report
+        html.required.set(true) // Enable HTML report
+    }
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it).exclude([
+                '**/com/audition/client/**',      // Exclude a specific package
+                '**/com/audition/exception/**',
+                '**/com/audition/logging/**',
+                '**/AuditionLogger.class',          // Exclude a specific class
+               
+            ])
+        }))
+    }
+}
+checkstyle {
+    toolVersion = '10.3' // Specify the Checkstyle version
+    configFile = file("$rootDir/config/checkstyle/checkstyle.xml") // Path to your Checkstyle config
+    // Optionally, you can set the config directory and file name
+    // configDirectory = file("$rootDir/config/checkstyle")
+    // configFileName = 'checkstyle.xml'
+}
+
+tasks.withType(Checkstyle) {
+    reports {
+        xml.required = false
+        html.required = true // Generates HTML reports
+        html.destination = file("${buildDir}/reports/checkstyle.html")
+    }
+}
+pmd {
+    toolVersion = '6.55.0' // Specify the PMD version
+    // You can also specify the rule set files or directories if needed
+    ruleSets = [] // Disable the default rule sets
+    ruleSetFiles = files("$rootDir/config/pmd/ruleset.xml") // Path to custom rules
+}
+tasks.withType(Pmd) {
+    reports {
+        xml.required = false
+        html.required = true // Generates HTML reports
+        html.destination = file("${buildDir}/reports/pmd/pmd.html")
+    }
+    // Optionally, fail the build on PMD violations
+    ignoreFailures = true
+}
+

@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: audition-api
+  config:
+    import: "optional:configserver:"
+  main:
+    allow-bean-definition-overriding: true
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+  mvc:
+    throw-exception-if-no-handler-found: true
+  sleuth:
+    sampler:
+      probability: 1.0
+server:
+  max-http-request-header-size: 16KB
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  endpoints:
+    web:
+      exposure:
+        include: '*' #TODO enable only info and health for security purposes. Consider that we may want to still access other actuator endpoints securely.
+  info:
+    env:
+      enabled: true
+
+info:
+  app:
+    name: ${spring.application.name}
+    description: This is a Audition API Spring Boot application.
+    version: "0.0.1-SNAPSHOT'"
