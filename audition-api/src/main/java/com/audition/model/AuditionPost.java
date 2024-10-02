@@ -11,7 +11,8 @@ public class AuditionPost {
  private String body;
  private List<Comment> comments;
 
- public Long getUserId() {
+
+public Long getUserId() {
  return userId;
  }
 

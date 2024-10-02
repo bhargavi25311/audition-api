@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,7 @@ class AuditionControllerTest {
  @Test
   void testGetPostWithComments() throws Exception {
  final Long postId = 9L;
- final AuditionPost postWithComments = createSampleAuditionPost(postId);
+ final Optional<AuditionPost> postWithComments = Optional.ofNullable(createSampleAuditionPost(postId));
  // Mock the service layer
  when(auditionService.getPostWithComments(postId)).thenReturn(postWithComments);
  // Perform GET request and assert responses
@@ -50,7 +51,7 @@ class AuditionControllerTest {
  @Test
   void testGetPostWithCommentsNotFound() throws Exception {
  final Long postId = 10L;
- when(auditionService.getPostWithComments(postId)).thenThrow(new ResourceNotFoundException("Post not found"));
+ when(auditionService.getPostWithComments(postId)).thenThrow(new ResourceNotFoundException("Post not found", postId));
  mockMvc.perform(get("/posts/{postId}/comments", postId)).andExpect(status().isNotFound());
  verify(auditionService, times(1)).getPostWithComments(postId);
  }
@@ -106,7 +107,7 @@ final List<Comment> mockComments = Arrays.asList(comment1, comment2);
  @Test
   void testGetCommentsForPostNotFound() throws Exception {
  final Long postId = 2L;
- when(auditionService.getCommentsForPost(postId)).thenThrow(new ResourceNotFoundException("Post not found"));
+ when(auditionService.getCommentsForPost(postId)).thenThrow(new ResourceNotFoundException("Post not found", postId));
  mockMvc.perform(get("/posts/{postId}/only-comments", postId)).andExpect(status().isNotFound());
  verify(auditionService, times(1)).getCommentsForPost(postId);
  }

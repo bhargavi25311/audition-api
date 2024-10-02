@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -69,10 +70,10 @@ import com.audition.model.Comment;
  // Stub: define the behavior of the mocked client
  when(auditionIntegrationClient.getPostById(postId)).thenReturn(mockPost);
  // Act: call the method under test
- final AuditionPost result = auditionService.getPostById(postId);
+ final Optional<AuditionPost> result = auditionService.getPostById(postId);
  // Assert: verify the behavior and results
- assertEquals("Sample Post for sucess", result.getTitle());
- assertEquals("1", result.getId());
+ assertEquals("Sample Post for sucess", result.get().getTitle());
+ assertEquals("1", result.get().getId());
  // Verify that the auditionIntegrationClient.getPostById() was called once
  verify(auditionIntegrationClient, times(1)).getPostById(postId);
  }
@@ -85,12 +86,12 @@ import com.audition.model.Comment;
  // Stub: define the behavior of the mocked client
  when(auditionIntegrationClient.getPostWithComments(postId)).thenReturn(postWithComments);
  // Act: call the method under test
- final AuditionPost result = auditionService.getPostWithComments(postId);
+ final Optional<AuditionPost> result = auditionService.getPostWithComments(postId);
  // Assert: verify the behavior and results
- assertEquals("Audition for Lead Role", result.getTitle());
- assertEquals(2, result.getComments().size());
- assertEquals("This is a description of the audition post test.", result.getComments().get(0).getBody());
- assertEquals("This is a description of the audition post.", result.getComments().get(1).getBody());
+ assertEquals("Audition for Lead Role", result.get().getTitle());
+ assertEquals(2, result.get().getComments().size());
+ assertEquals("This is a description of the audition post test.", result.get().getComments().get(0).getBody());
+ assertEquals("This is a description of the audition post.", result.get().getComments().get(1).getBody());
  // Verify that the auditionIntegrationClient.getPostWithComments() was called
  verify(auditionIntegrationClient, times(1)).getPostWithComments(postId);
  }

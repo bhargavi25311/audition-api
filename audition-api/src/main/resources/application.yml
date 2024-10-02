@@ -32,3 +32,21 @@ info:
     name: ${spring.application.name}
     description: This is a Audition API Spring Boot application.
     version: "0.0.1-SNAPSHOT'"
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    display-operation-id: true
+    default-model-expand-depth: 1
+    deep-linking: true
+    filter: true
+    show-extensions: true
+    show-common-extensions: true
+
+api:
+  base-url: https://jsonplaceholder.typicode.com
+  posts-url: /posts/{postId}
+  comments-url: /comments?postId={postId}
+
+

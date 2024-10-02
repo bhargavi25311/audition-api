@@ -1,6 +1,7 @@
 package com.audition.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,12 +21,12 @@ public class AuditionService {
         return auditionIntegrationClient.getPosts();
     }
 
-    public AuditionPost getPostById(final String postId) {
-        return auditionIntegrationClient.getPostById(postId);
+    public Optional<AuditionPost> getPostById(final String postId) {
+        return Optional.ofNullable(auditionIntegrationClient.getPostById(postId));
     }
     
-    public AuditionPost getPostWithComments(final Long postId) {
-        return auditionIntegrationClient.getPostWithComments(postId);
+    public Optional<AuditionPost> getPostWithComments(final Long postId) {
+        return Optional.ofNullable(auditionIntegrationClient.getPostWithComments(postId));
     }
     
     
